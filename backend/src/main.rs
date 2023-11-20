@@ -25,7 +25,7 @@ async fn main() -> Result<()> {
 
     let app = Router::new()
         .route("/todos", get(read).post(create))
-        .route("/todos/:id", delete(delete_todo).patch(update_todo))
+        .route("/todos/:id", delete(delete_todo).get(update_todo))
         .with_state(pool)
         .layer(CorsLayer::very_permissive());
 

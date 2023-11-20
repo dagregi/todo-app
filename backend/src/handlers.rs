@@ -25,17 +25,13 @@ pub async fn read(State(pool): State<PgPool>) -> Result<Json<Vec<Todo>>> {
 // struct for the new todo
 #[derive(Serialize, Deserialize)]
 pub struct NewTodo {
-    pub id: i64,
     pub description: String,
-    pub completed: bool,
 }
 // method to create new todos
 pub async fn create(State(pool): State<PgPool>, Form(new_todo): Form<NewTodo>) -> Result<String> {
     sqlx::query!(
-        "INSERT INTO todos (id, description, completed) VALUES ($1, $2, $3)",
-        &new_todo.id,
+        "INSERT INTO todos (description) VALUES ($1)",
         &new_todo.description,
-        &new_todo.completed
     )
     .execute(&pool)
     .await?;
@@ -52,7 +48,7 @@ pub async fn delete_todo(State(pool): State<PgPool>, Path(id): Path<i64>) -> Res
     Ok("Success!".to_string())
 }
 
-#[derive(Deserialize)]
+#[derive(Serialize, Deserialize)]
 pub struct UpdateTodo {
     pub description: String,
     pub completed: bool,
